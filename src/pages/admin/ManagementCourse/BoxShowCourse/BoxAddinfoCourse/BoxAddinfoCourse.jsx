@@ -20,12 +20,7 @@ const BoxAddinfoCourse = ({ refetch }) => {
     { id: "3", name: "Marketing" },
     { id: "4", name: "Kinh doanh" },
   ];
-  const providers = [
-    { id: "1", name: "Nguyễn Văn A" },
-    { id: "2", name: "Trần Văn B" },
-    { id: "3", name: "Lê Văn C" },
-    { id: "4", name: "Phạm Văn D" },
-  ];
+
   const handleChange = (value) => {
     setCategory(value);
     console.log("Selected:", value);
@@ -64,10 +59,20 @@ const BoxAddinfoCourse = ({ refetch }) => {
                   className="w-full flex justify-between items-center gap-2"
                 >
                   <Form.Item
-                      className="custom-form-item"
+                      className="custom-form-item w-full"
+                      label={<span className="text-[12px]">Nhà cung cấp</span>}
+                      name="provider"
+                      rules={[
+                          { required: true, message: "Vui lòng nhập nhà cung cấp!" },
+                      ]}
+                  >
+                    <Input className="custom-input" disabled  defaultValue={`Nguyễn Văn A`}/>
+                  </Form.Item>
+                  
+                  <Form.Item
+                      className="custom-form-item w-full"
                       label={<span className="text-[12px]">Danh mục</span>}
                       name="category"
-                      className="w-full"
                       rules={[
                           { required: true, message: "Vui lòng nhập danh mục!" },
                       ]}
@@ -90,42 +95,15 @@ const BoxAddinfoCourse = ({ refetch }) => {
                     </Select>
                   </Form.Item>
 
-                  <Form.Item
-                      className="custom-form-item"
-                      label={<span className="text-[12px]">Nhà cung cấp</span>}
-                      name="provider"
-                      className="w-full"
-                      rules={[
-                          { required: true, message: "Vui lòng nhập nhà cung cấp!" },
-                      ]}
-                  >
-                    <Select
-                      placeholder="Chọn Nhà cung cấp"
-                      onChange={handleChangeProvider}
-                      value={provider}
-                      style={{ 
-                        outline: "none", border: "1.5px solid #CBCBCB", borderRadius: "10px" }}
-                      className="
-                        w-full h-[40px] 
-                      "
-                    >
-                      {providers.map((item) => (
-                        <Option key={item.id} value={item.id}>
-                          {item.name}
-                        </Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
                 </div>
                 
                 <div
                   className="w-full flex justify-between items-center gap-2"
                 >
                   <Form.Item
-                      className="custom-form-item"
+                      className="custom-form-item w-full"
                       label={<span className="text-[12px]">Tên khóa học</span>}
                       name="courseName"
-                      className="w-full"
                       rules={[
                           { required: true, message: "Vui lòng nhập tên khóa học!" },
                       ]}
@@ -134,10 +112,9 @@ const BoxAddinfoCourse = ({ refetch }) => {
                   </Form.Item>
 
                   <Form.Item
-                      className="custom-form-item"
+                      className="custom-form-item w-full"
                       label={<span className="text-[12px]">Giá khóa học</span>}
                       name="price"
-                      className="w-full"
                       rules={[
                           { required: true, message: "Vui lòng nhập giá khóa học!" },
                       ]}
@@ -151,10 +128,9 @@ const BoxAddinfoCourse = ({ refetch }) => {
                   className="w-full flex justify-between items-center gap-2"
                 >
                   <Form.Item
-                      className="custom-form-item"
+                      className="custom-form-item w-full"
                       label={<span className="text-[12px]">Ảnh khóa học</span>}
-                      name="image_url"
-                      className="w-full"  
+                      name="image_url"  
                       rules={[
                           { required: true, message: "Vui lòng nhập URL ảnh khóa học!" },
                       ]}
@@ -163,10 +139,9 @@ const BoxAddinfoCourse = ({ refetch }) => {
                   </Form.Item>
 
                   <Form.Item
-                        className="custom-form-item"
+                        className="custom-form-item w-full"
                         label={<span className="text-[12px]">Video khóa học</span>}
                         name="video_url"
-                        className="w-full"
                         rules={[
                             { required: true, message: "Vui lòng nhập URL video khóa học!" },
                         ]}
@@ -175,10 +150,9 @@ const BoxAddinfoCourse = ({ refetch }) => {
                   </Form.Item>
                 </div>
                 <Form.Item
-                  className="custom-form-item"
+                  className="custom-form-item w-full"
                   label={<span className="text-[12px]">Thời gian khóa học</span>}
                   name="duration"
-                  className="w-full"
                   rules={[
                       { required: true, message: "Vui lòng nhập thời gian khóa học!" },
                   ]}
