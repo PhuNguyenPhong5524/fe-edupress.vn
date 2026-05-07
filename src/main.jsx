@@ -24,73 +24,77 @@ import PrivateRouteAdmin from './components/routes/PrivateRouteAdmin.jsx'
 import ManagementCourse from './pages/admin/ManagementCourse/ManagementCourse.jsx'
 import BoxShowDetailCourse from './pages/admin/ManagementCourse/BoxShowDetailCourse/BoxShowDetailCourse.jsx'
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
+const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <AuthProvider>
-      <BrowserRouter> 
-        <Routes>
-            {/* Customer */}
-              <Route 
-                path='/' 
-                element={
-                    <CustomerLayout />
-                }
-              >
-                <Route index element={<HomePage />} />
-                <Route path='detail/:_id' element={<Detail />} />
-                <Route path='course-category/:_id' element={<CourseCategoryPage />} />
-                <Route path='cart' element={<CartPage /> } />
-                <Route 
-                  path='checkout' 
-                  element={
-                      <PrivateRoute>
-                        <CheckoutPage />
-                      </PrivateRoute>
-                  } 
-                />
-                <Route path='checkout-history' element={<CheckoutHistoryPage />} />
-                <Route 
-                  path='my-course' 
-                  element={
-                    <MyCoursePage />
-                  } 
-                />
-              </Route>
-            {/* Admin */}
-              <Route
-                path="/admin"
-                element={
-                  <PrivateRouteAdmin>
-                    <AdminLayout />
-                  </PrivateRouteAdmin>
-                }
-              >
-                <Route path="employee" element={<ManagementUsers />} />
-                <Route path="course" element={<ManagementCourse />} />
-                <Route path="course/:_id" element={<BoxShowDetailCourse />} />
-                <Route path="notification" element={<ManagementNotification />} />
-              </Route>
+    <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <BrowserRouter> 
+              <Routes>
+                  {/* Customer */}
+                    <Route 
+                      path='/' 
+                      element={
+                          <CustomerLayout />
+                      }
+                    >
+                      <Route index element={<HomePage />} />
+                      <Route path='detail/:_id' element={<Detail />} />
+                      <Route path='course-category/:_id' element={<CourseCategoryPage />} />
+                      <Route path='cart' element={<CartPage /> } />
+                      <Route 
+                        path='checkout' 
+                        element={
+                            <PrivateRoute>
+                              <CheckoutPage />
+                            </PrivateRoute>
+                        } 
+                      />
+                      <Route path='checkout-history' element={<CheckoutHistoryPage />} />
+                      <Route 
+                        path='my-course' 
+                        element={
+                          <MyCoursePage />
+                        } 
+                      />
+                    </Route>
+                  {/* Admin */}
+                    <Route
+                      path="/admin"
+                      element={
+                        <PrivateRouteAdmin>
+                          <AdminLayout />
+                        </PrivateRouteAdmin>
+                      }
+                    >
+                      <Route path="employee" element={<ManagementUsers />} />
+                      <Route path="course" element={<ManagementCourse />} />
+                      <Route path="course/:_id" element={<BoxShowDetailCourse />} />
+                      <Route path="notification" element={<ManagementNotification />} />
+                    </Route>
 
-          <Route 
-            path='scan' 
-            element={
-               <ScanPage />
-            } 
-          />
-          <Route 
-            path='learning/:_id' 
-            element={
-              <PrivateRoute>
-                <LearningPage />
-              </PrivateRoute>
-            } 
-          />
-          <Route path='login' element={<Login />} />
-          <Route path='register' element={<Register />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+                <Route 
+                  path='scan' 
+                  element={
+                    <ScanPage />
+                  } 
+                />
+                <Route 
+                  path='learning/:_id' 
+                  element={
+                    <PrivateRoute>
+                      <LearningPage />
+                    </PrivateRoute>
+                  } 
+                />
+                <Route path='login' element={<Login />} />
+                <Route path='register' element={<Register />} />
+              </Routes>
+            </BrowserRouter>
+          </AuthProvider>
+    </QueryClientProvider>
   </StrictMode>
 )
