@@ -62,7 +62,7 @@ createRoot(document.getElementById('root')).render(
                       />
                     </Route>
                   {/* Admin */}
-                    <Route
+                    {/* <Route
                       path="/admin"
                       element={
                         <PrivateRouteAdmin>
@@ -74,8 +74,44 @@ createRoot(document.getElementById('root')).render(
                       <Route path="course" element={<ManagementCourse />} />
                       <Route path="course/:_id" element={<BoxShowDetailCourse />} />
                       <Route path="notification" element={<ManagementNotification />} />
-                    </Route>
+                    </Route> */}
+                    <Route
+                      path="/admin"
+                      element={
+                        <PrivateRoute roles={["admin", "provider"]}>
+                          <AdminLayout />
+                        </PrivateRoute>
+                      }
+                    >
+                      {/* chỉ admin */}
+                      <Route
+                        path="employee"
+                        element={
+                          <PrivateRoute roles={["admin"]}>
+                            <ManagementUsers />
+                          </PrivateRoute>
+                        }
+                      />
 
+                      {/* admin + provider */}
+                      <Route
+                        path="course"
+                        element={
+                          <PrivateRoute roles={["admin", "provider"]}>
+                            <ManagementCourse />
+                          </PrivateRoute>
+                        }
+                      />
+
+                      <Route
+                        path="course/:_id"
+                        element={
+                          <PrivateRoute roles={["admin", "provider"]}>
+                            <BoxShowDetailCourse />
+                          </PrivateRoute>
+                        }
+                      />
+                    </Route>
                 <Route 
                   path='scan' 
                   element={

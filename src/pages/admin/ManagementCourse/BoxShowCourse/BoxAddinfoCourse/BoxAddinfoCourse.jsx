@@ -66,7 +66,7 @@ const BoxAddinfoCourse = ({ refetch }) => {
                           { required: true, message: "Vui lòng nhập nhà cung cấp!" },
                       ]}
                   >
-                    <Input className="custom-input" disabled  defaultValue={`Nguyễn Văn A`}/>
+                    <Input className="custom-input" disabled  initialValues={`Nguyễn Văn A`}/>
                   </Form.Item>
                   
                   <Form.Item
@@ -161,10 +161,9 @@ const BoxAddinfoCourse = ({ refetch }) => {
                 </Form.Item>
 
                 <Form.Item
-                    className="custom-form-item"
+                    className="custom-form-item w-full"
                     label={<span className="text-[12px]">Mô tả khóa học</span>}
                     name="description"
-                    className="w-full"
                     rules={[
                         { required: true, message: "Vui lòng nhập mô tả khóa học!" },
                     ]}

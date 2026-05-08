@@ -19,14 +19,19 @@ const AuthProvider = ({ children }) => {
 
 
 
-    const login = (userData) =>{
-        localStorage.setItem("user", JSON.stringify(userData));
-        setUser(userData);
-    }
+   const login = ({ user, accessToken, refreshToken }) => {
+        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+        setUser(user);
+    };
     const logout = () => {
         localStorage.removeItem("user");
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
         setUser(null);
     };
+
 
     // check quyền 
     const hasRole = (role) => {
@@ -42,14 +47,14 @@ const AuthProvider = ({ children }) => {
 
     // Lấy chữ cái trên avatar (viết hoa)
     const getAvatarLetter = () => {
-        if (!user?.username) return "";
+        if ( !user || !user?.username) return "?";
 
         return user.username
         .trim() 
         .split(" ")// tách chuỗi thành mảng
         .pop() // Lấy phần tử cuối cùng của mảng
         .charAt(0)// Lấy ký tự đầu tiên
-        .toUpperCase();
+        .toUpperCase() || "?";
     };
 
     return (

@@ -52,13 +52,44 @@ const AdminLayout = () => {
         return "";
     }
   };
+  const role = user?.role;
 
+  const menuItems = [
+    ...(role === "admin"
+      ? [
+          {
+            key: "employee",
+            icon: <UserOutlined style={{ fontSize: 20 }} />,
+            label: "Quản lý tài khoản",
+            onClick: () => nav("employee"),
+          },
+          {
+            key: "notification",
+            icon: <BellOutlined style={{ fontSize: 20 }} />,
+            label: "Quản lý thông báo",
+            onClick: () => nav("notification"),
+          },
+        ]
+      : []),
 
+    ...(role === "admin" || role === "provider"
+      ? [
+          {
+            key: "course",
+            icon: <VideoCameraOutlined style={{ fontSize: 20 }} />,
+            label: "Quản lý khóa học",
+            onClick: () => nav("course"),
+          },
+        ]
+      : []),
+  ];
 
   return (
     <Layout style={{ minHeight: '100vh', background: '#ffffff !important' }}>
       <Sider trigger={null} collapsible collapsed={collapsed} >
-        <h1 className='text-[#ffffff] text-center py-[20px] text-[20px] font-bold' >Admin</h1>
+        <h1 className='text-[#ffffff] text-center py-[20px] text-[20px] font-bold' >
+          {role === "admin" ? "Admin" : "Nhà cung cấp"}
+        </h1>
         <Menu
           theme="dark"
           mode="inline"
@@ -66,37 +97,9 @@ const AdminLayout = () => {
           className='
             admin-menu 
           '
-          items={[
-            {
-              key: '1',
-              icon: <UserOutlined style={{ fontSize: '20px' }} />,
-              label: 'Quản lý tài khoản',
-              onClick: () => {
-                nav('employee');
-              }
-            },
-            {
-              key: '2',
-              icon: <BellOutlined style={{ fontSize: '20px' }} />,
-              label: 'Quản lý thông báo',
-              onClick: () => {
-                nav('notification');
-              }
-            },
-            {
-              key: '3',
-              icon: <VideoCameraOutlined style={{ fontSize: '20px' }} />,
-              label: 'Quản lý Khóa học',
-              onClick: () => {
-                nav('course');
-              }
-            },
-            {
-              key: '4',
-              icon: <OrderedListOutlined style={{ fontSize: '20px' }} />,
-              label: 'Quản lý giao dịch',
-            },
-          ]}
+          selectedKeys={[pathname.split("/").pop()]}
+          items={menuItems}
+
         />
       </Sider>
       <Layout>

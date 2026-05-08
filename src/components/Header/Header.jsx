@@ -74,7 +74,7 @@ const Header = () => {
 
     const courseCount = cart?.courses?.length ?? 0;
 
-
+    // console.log("user", user.username);
 
     return (
         <header 

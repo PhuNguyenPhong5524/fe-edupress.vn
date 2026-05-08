@@ -1,40 +1,43 @@
 import { Form, Input, Button, Alert } from "antd";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import useFetchData from "../../api/useFetchData";
 import useAuth from "../../hooks/useAuth";
 import { message } from "antd";
+import useLogin from "../../hooks/useLogin";
 
 export default function Login() {
-  const { data: users = [] } = useFetchData("users");
-  const [loading, setLoading] = useState(false);
+
   const nav = useNavigate();
   const { login } = useAuth();
+
+  const { mutate: loginMutate, isPending } = useLogin();
+
   const onFinish = (values) => {
-    setLoading(true);
-    const user = users.find(
-      (u) =>
-        u.email === values.email &&
-        String(u.password) === String(values.password)
-    );
+    loginMutate(values, {
+      onSuccess: (data) => {
+        const { accessToken, refreshToken, user } = data;
 
-    if (!user) {
-      setTimeout(() => {
-        message.error("Email hoặc mật khẩu không đúng!");
-        setLoading(false);
-      }, 600);
-      return; 
-    }
+        login({ user, accessToken, refreshToken });
 
-    login(user);
+        message.success("Đăng nhập thành công!");
 
-    setTimeout(() => {
-      message.success("Đăng nhập thành công!");
-      setLoading(false);
+        if (user.role === "admin") {
+          nav("/admin/employee");
+        } else if (user.role === "provider") {
+          nav("/admin/course");
+        } else {
+          nav("/"); 
+        }
+      },
 
-      nav(user.role === "admin" ? "/admin/employee" : "/");
-    }, 600);
+      onError: (error) => {
+        message.error(
+          error?.response?.data?.message || "Đăng nhập thất bại!"
+        );
+      },
+    });
   };
+
 
   return (
    <div className="bgr_login min-h-screen flex items-center justify-center px-4 bg-gray-50">
@@ -60,7 +63,7 @@ export default function Login() {
           </h3>
 
           <Form
-            disabled={loading}
+            disabled={isPending}
             layout="vertical"
             onFinish={onFinish}
             autoComplete="off"
@@ -118,7 +121,7 @@ export default function Login() {
               <Button
                 className="custom-btn"
                 htmlType="submit"
-                loading={loading}
+                loading={isPending}
               >
                 Đăng nhập
               </Button>

@@ -6,17 +6,14 @@ import { Navigate } from "react-router-dom";
 
 
 const PrivateRouteAdmin = ({ children }) => {
+  
   const { user, loading } = useAuth();
 
-  if (loading) {
-    return <Spin fullscreen />;
-  }
+  if (loading) return <Spin fullscreen />;
 
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
+  if (!user) return <Navigate to="/login" replace />;
 
-  if (user.role !== "admin") {
+  if (roles && !roles.includes(user.role)) {
     return <Navigate to="/" replace />;
   }
 

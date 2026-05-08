@@ -236,3 +236,51 @@
 .custom-tabs .ant-tabs-ink-bar {
   background: #FF7D35 !important;
 }
+
+/* Menu User */
+
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 8px 12px;
+  cursor: pointer;
+
+  border-left: 2px solid #ffffff;
+  color: #000000;
+
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+
+  transition:
+    padding-left 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease,
+    background-color 0.25s ease;
+}
+
+/* Hover */
+.menu-item:hover {
+  padding-left: 20px;            /* thay vì pl-5 */
+  border-left-color: #FFAC2D;
+  color: #FF782D;
+  background-color: #ffffff;
+}
+
+/* Link bên trong */
+.menu-item a {
+  color: inherit;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Icon giữ màu theo text */
+.menu-item svg {
+  transition: color 0.25s ease;
+}
+
