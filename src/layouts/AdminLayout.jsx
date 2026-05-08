@@ -39,19 +39,21 @@ const AdminLayout = () => {
   const { pathname } = useLocation();
 
   const getTitle = () => {
-    switch (pathname) {
-      case "/admin":
-        return "Trang chủ";
-      case "/admin/employee":
-        return "Quản lý tài khoản";
-      case "/admin/course":
-        return "Quản lý khóa học";
-      case "/admin/notification":
-        return "Quản lý thông báo";
-      default:
-        return "";
-    }
+    if (pathname === "/admin") return "Trang chủ";
+    if (pathname.startsWith("/admin/employee")) return "Quản lý tài khoản";
+    if (pathname.startsWith("/admin/course")) return "Quản lý khóa học";
+    if (pathname.startsWith("/admin/notification")) return "Quản lý thông báo";
+
+    return "";
   };
+  
+  const getSelectedKey = () => {
+    if (pathname.startsWith("/admin/course")) return "course";
+    if (pathname.startsWith("/admin/employee")) return "employee";
+    if (pathname.startsWith("/admin/notification")) return "notification";
+    return "";
+  };
+
   const role = user?.role;
 
   const menuItems = [
@@ -72,7 +74,7 @@ const AdminLayout = () => {
         ]
       : []),
 
-    ...(role === "admin" || role === "provider"
+    ...(role === "provider"
       ? [
           {
             key: "course",
@@ -97,7 +99,7 @@ const AdminLayout = () => {
           className='
             admin-menu 
           '
-          selectedKeys={[pathname.split("/").pop()]}
+          selectedKeys={[getSelectedKey()]}
           items={menuItems}
 
         />

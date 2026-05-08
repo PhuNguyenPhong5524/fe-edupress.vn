@@ -282,7 +282,7 @@ const BoxShowCourse = () => {
     <div>
       <div className="flex justify-between items-center">
         <h1 className="text-[18px] font-semibold">
-          Quản lý khóa học
+       
         </h1>
         <BoxAddinfoCourse />
       </div>
