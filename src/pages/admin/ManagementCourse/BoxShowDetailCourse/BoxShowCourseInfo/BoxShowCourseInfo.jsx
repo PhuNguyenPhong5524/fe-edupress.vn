@@ -19,7 +19,7 @@ const course = {
 };
 
 
-const BoxShowCourseInfoDetail = () => {
+const BoxShowCourseInfo = ({ showCourse }) => {
     return(
         <div>
             <div className="flex justify-between items-center mb-3">
@@ -37,7 +37,7 @@ const BoxShowCourseInfoDetail = () => {
                     >
                     <div className="aspect-video w-full">
                     <iframe
-                        src={course.video_url}
+                        src={showCourse.video_url}
                         title="video"
                         className="w-full h-full rounded"
                         allowFullScreen
@@ -64,7 +64,7 @@ const BoxShowCourseInfoDetail = () => {
                     <strong className="pr-2">
                     #Mã khóa học:
                     </strong> 
-                    {course._id}
+                    {showCourse._id}
                 </p>
                 <div 
                     className="
@@ -74,47 +74,47 @@ const BoxShowCourseInfoDetail = () => {
                 >
                     <p className="text-[#000000] text-[14px]">
                     <strong className="pr-2">Ngày tạo:</strong> 
-                    {course.create_At}
+                        {new Date(showCourse.createdAt).toLocaleDateString("vi-VN")}
                     </p>
                     <p className="text-[#a7a7a7] text-[14px]">—</p>
                     <p className="text-[#000000] text-[14px]">
                     <strong className="pr-2">Ngày cập nhật:</strong> 
-                    {course.update_At}
+                        {new Date(showCourse.updatedAt).toLocaleDateString("vi-VN")}
                     </p>
                 </div>
                 <p className="text-[#000000] text-[14px]">
                     <strong className="pr-2">Danh mục:</strong> 
-                    {course.category_name}
+                    {showCourse.category}
                 </p>
-                <p className="text-[#000000] text-[14px]">
+                <p className="text-[#000000] text-[14px] ">
                     <strong className="pr-2">Giảng viên:</strong> 
-                    {course.provider_name}
+                    {showCourse.provider}
                 </p>
                 <p className="text-[#000000] text-[14px]">
                     <strong className="pr-2">Số học viên:</strong> 
-                    {course.students}
+                    {showCourse.students}
                 </p>
                 <p className="text-[#000000] text-[14px]">
                     <strong className="pr-2">Thời lượng:</strong> 
-                    {course.duration}
+                    {showCourse.duration}
                 </p>
                 </div>
                 <div className="flex items-center justify-between px-4 pt-2 border-t border-t-[#d4d4d4] ">
                 <div className="flex items-center">
                     <p className="pr-2 text-[14px] font-bold text-[#000000] ">Giá khóa học:</p> 
                     <span className="text-[#e70000] text-[18px] font-bold">
-                        { course.price === 0 
+                        { showCourse.price === 0 
                             ? <span className="text-green-400 font-semibold">Free</span>
-                            : `${Number(course.price).toLocaleString('vi-VN')} VND`
+                            : `${Number(showCourse.price).toLocaleString('vi-VN')} VND`
                         }
                     </span>
                 </div>
                 <div className="flex items-center">
                     <p className="pr-2 text-[14px] font-bold text-[#000000] ">Giá giảm:</p> 
                     <span className="text-[#e70000] text-[18px] font-bold">
-                        { course.price_promotion === null || course.price_promotion === 0 
+                        { showCourse.price_promotion === null || showCourse.price_promotion === 0 
                             ? <span className="text-[#d8d8d8] font-semibold">—</span>
-                            : `${Number(course.price_promotion).toLocaleString('vi-VN')} VND`
+                            : `${Number(showCourse.price_promotion).toLocaleString('vi-VN')} VND`
                         }
                     </span>
                 </div>
@@ -136,7 +136,7 @@ const BoxShowCourseInfoDetail = () => {
                         <textarea
                             disabled
                             rows="6"
-                            defaultValue={course.description}
+                            defaultValue={showCourse.description}
                             className="w-full border p-2 border-gray-200 rounded bg-[#F5F5F5]"
                         />
                     </div>
@@ -146,4 +146,4 @@ const BoxShowCourseInfoDetail = () => {
     );
 }
 
-export default BoxShowCourseInfoDetail;
+export default BoxShowCourseInfo;
