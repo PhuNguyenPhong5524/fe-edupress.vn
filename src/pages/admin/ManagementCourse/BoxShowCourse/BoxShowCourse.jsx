@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
-import { Table, Space, Tag, Popconfirm, message, Image } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import { Table, Space, Tag, Popconfirm, message, Image, Button } from "antd";
+import { DeleteOutlined, ReloadOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { EyeOutlined } from "@ant-design/icons";
 // import BoxAddCourse from "./BoxAddCourse";
@@ -162,6 +162,7 @@ import { Link } from "react-router-dom";
 import BoxAddinfoCourse from "./BoxAddinfoCourse/BoxAddinfoCourse";
 import useFetchCourse from "../../../../hooks/useCourse/useFetchCourse";
 import useLoading from "../../../../hooks/useLoading";
+import useAuth from "../../../../hooks/useAuth";
 
 const BoxShowCourse = () => {
 
@@ -169,9 +170,10 @@ const BoxShowCourse = () => {
   const [pageSize, setPageSize] = useState(10);
   const [keyword, setKeyword] = useState("");
 
-  const { data, isFetching, refetch } = useFetchCourse(page, pageSize, keyword);
+  const { data: showCourses, isFetching, refetch } = useFetchCourse(page, pageSize, keyword);
   const [clicked, setClicked] = useState(false);
   const loading = useLoading(isFetching, 300);
+  const {user} = useAuth();
 
 
   const columns = [
@@ -284,17 +286,30 @@ const BoxShowCourse = () => {
         <h1 className="text-[18px] font-semibold">
        
         </h1>
-        <BoxAddinfoCourse />
+        <div
+          className="flex items-center gap-3"
+        >
+          <button
+            onClick={() => refetch()}
+            className="
+              border border-dashed border-[#c8c8c8] text-[#000000] px-3 py-2 rounded-[5px] transition duration-300 ease-in-out 
+              hover:scale-95 hover:opacity-65 cursor-pointer
+            "
+          >
+            <ReloadOutlined /> Làm mới
+          </button>
+          <BoxAddinfoCourse />
+        </div>
       </div>
       <Table
         rowKey="_id"
-        columns={columns} 
-        dataSource={data?.data || []}
+        columns={columns}
+        dataSource={showCourses?.data || []}
         loading={loading}
         pagination={{
           current: page,
           pageSize,
-          total: data?.totalCourses || 0,
+          total: showCourses?.totalCourses || 0,
           showSizeChanger: true,
           pageSizeOptions: [10, 20, 50],
           onChange: (p, ps) => {
@@ -303,7 +318,6 @@ const BoxShowCourse = () => {
           },
           showTotal: (t) => `Tổng: ${t}`,
         }}
-        className=" shadow-lg rounded-2xl border border-dashed border-[#c8c8c8] overflow-hidden px-3 mt-3"
       />
     </div>
   );

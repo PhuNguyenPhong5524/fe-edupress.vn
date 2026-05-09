@@ -5,6 +5,8 @@ import useAuth from "../../../../../hooks/useAuth";
 import usePostCourse from "../../../../../hooks/useCourse/usePostCourse";
 import { notification } from "antd";
 
+import { useNavigate } from "react-router-dom";
+
 
 const { Option } = Select;
 
@@ -16,7 +18,8 @@ const BoxAddinfoCourse = ({ refetch }) => {
   const { user } = useAuth();
   const { mutate: addCourse, isPending } = usePostCourse();
 
-  const handleSubmit = async (values) => {
+  const navigate = useNavigate();
+  const handleSubmit = (values) => {
     const payload = {
       category_id: values.category,
       course_title: values.courseName,
@@ -28,29 +31,46 @@ const BoxAddinfoCourse = ({ refetch }) => {
       feature: false,
     };
 
-    try {
-      await addCourse(payload);
+    addCourse(payload, {
+      onSuccess: () => {
+        notification.success({
+          title: "Thành công",
+          description: "Lưu thông tin khóa học thành công!",
+        });
 
-      notification.success({
-        title: "Thành công",
-        description: "Lưu thông tin khóa học thành công!",
-        placement: "topRight",
-        duration: 3,
-      });
+        setOpen(false);
+        form.resetFields();
+        refetch?.();
+      },
 
-      setOpen(false);
-      form.resetFields();
-      refetch?.();
-    } catch (error) {
-      notification.error({
-        title: "Thất bại",
-        description:
-          error?.response?.data?.message || "Lưu khóa học thất bại!",
-        placement: "topRight",
-        duration: 3,
-      });
-    }
+      onError: (error) => {
+        const status = error?.response?.status;
+
+        if (status === 401) {
+          // ✅ Báo lỗi TRƯỚC
+          notification.error({
+            title: "Phiên đăng nhập đã hết hạn!",
+            description: "Vui lòng đăng nhập lại",
+          });
+
+          // ✅ Xóa token
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+
+          // ✅ Chuyển trang SAU
+          setTimeout(() => {
+            navigate("/login");
+          }, 1500);
+        } else {
+          notification.error({
+            title: "Thất bại",
+            description: "Lưu khóa học thất bại",
+          });
+        }
+      },
+    });
   };
+
 
   return (
     <>
@@ -58,7 +78,7 @@ const BoxAddinfoCourse = ({ refetch }) => {
         onClick={() => setOpen(true)}
         className="
           bg-[#FF7D35] text-white px-4 py-2 rounded
-          hover:scale-95 hover:opacity-70 transition
+          hover:scale-95 hover:opacity-70 transition cursor-pointer
         "
       >
         + Thêm khóa học

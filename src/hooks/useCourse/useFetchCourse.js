@@ -1,11 +1,11 @@
     import { useQuery } from "@tanstack/react-query";
-    import axios from "axios";
+    import { api } from "../../api/api.js";
 
     const useFetchCourse = (page, limit, search) => {
     return useQuery({
         queryKey: ["courses", page, limit, search],
         queryFn: async () => {
-        const res = await axios.get("http://localhost:8080/courses", {
+        const res = await  api.get("http://localhost:8080/my-courses", {
             params: {
             page,
             limit,
