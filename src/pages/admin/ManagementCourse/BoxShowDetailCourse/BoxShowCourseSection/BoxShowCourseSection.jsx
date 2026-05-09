@@ -1,4 +1,4 @@
-import { Collapse, Button, Space } from "antd";
+import { Collapse, Button, Space, Popconfirm } from "antd";
 import {
   CaretDownOutlined,
   ClockCircleOutlined,
@@ -9,6 +9,9 @@ import {
 import BoxLesson from "./BoxLesson";
 import EditCourseIcon from "../../../../../components/icons/EditCourseIcon";
 import CloseIcon from "../../../../../components/icons/CloseIcon";
+import BoxEditCourseSection from "./BoxCourseSection/BoxEditCourseSection";
+import BoxAddCourseSection from "./BoxCourseSection/BoxAddCourseSection";
+import BoxAddCourseLecture from "./BoxCourseLecture/BoxAddCourseLecture";
 
 const BoxShowCourseSection = ({
   showCoure,
@@ -29,7 +32,7 @@ const BoxShowCourseSection = ({
       <div
         className="
           flex justify-between items-start w-full
-          px-3 py-2 rounded-md
+          px-4 py-2 rounded-md
           
         "
       >
@@ -39,70 +42,41 @@ const BoxShowCourseSection = ({
             {section.chapter_title}
           </span>
 
-          <div className="flex items-center gap-3 text-white text-[10px] opacity-90">
+          <div className="flex items-center gap-3 text-white text-[12px] opacity-90">
             <span>{section.lectures?.length || 0} bài giảng</span>
             <span>{section.duration}</span>
           </div>
         </div>
 
         {/* RIGHT */}
-        <Space size="small">
-            <button
-                onClick={(e) => {
-                    e.stopPropagation();
-                    onEditSection?.(section);
-                }}
-                className="
-                    text-white  transition p-2 
-                    duration-300 ease-in-out hover:bg-[#ffd5bf] rounded-[5px]
-                    hover:opacity-65 cursor-pointer hover:scale-125
-                " 
+        <Space size="small" style={{paddingRight:"15px"}}>
+            
+            < BoxEditCourseSection
+
+            />
+            <Popconfirm
+                title="Bạn chắc chắn muốn xóa khóa học?"
+                // onConfirm={}
             >
-                <PlusOutlined 
-                    size={18}
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onDeleteSection?.(section._id);
+                    }}
                     className="
-                    
-                        group-hover:fill-blue-500
+                        text-red-500 hover:text-red-700 transition p-2 
+                        duration-300 ease-in-out hover:bg-[#ffd5bf] rounded-[5px]
+                        hover:opacity-65 cursor-pointer hover:scale-125
                     "
-                />
-            </button>
-            <button
-                onClick={(e) => {
-                    e.stopPropagation();
-                    onEditSection?.(section);
-                }}
-                className="
-                    text-blue-500 hover:text-blue-700 transition p-2 
-                    duration-300 ease-in-out hover:bg-[#ffd5bf] rounded-[5px]
-                    hover:opacity-65 cursor-pointer hover:scale-125
-                " 
-            >
-                <EditCourseIcon 
-                    size={18}
-                    className="
-                    
-                        group-hover:fill-blue-500
-                    "
-                />
-            </button>
-            <button
-                onClick={(e) => {
-                    e.stopPropagation();
-                    onDeleteSection?.(section._id);
-                }}
-                className="
-                    text-red-500 hover:text-red-700 transition p-2 
-                    duration-300 ease-in-out hover:bg-[#ffd5bf] rounded-[5px]
-                    hover:opacity-65 cursor-pointer hover:scale-125
-                "
-            >
-                <CloseIcon 
-                    size={18} 
-                    className="
-                        
-                    "
-                />
-            </button>
+                >
+                    <CloseIcon 
+                        size={18} 
+                        className="
+                            
+                        "
+                    />
+                </button>
+            </Popconfirm>
         </Space>
       </div>
     ),
@@ -110,42 +84,59 @@ const BoxShowCourseSection = ({
     children: (
       <div
         className="
-          flex flex-col gap-1
-          px-2 py-2
-          transition-all duration-300 ease-in-out
+          flex flex-col gap-2
+          px-5 py-3
         "
       >
-        {section.lectures?.map((lecture) => (
-          <BoxLesson
-            key={lecture._id}
-            title={lecture.title}
-            time={lecture.duration}
-            preview={lecture.preview}
-            onEdit={() => onEditLecture?.(lecture, section)}
-            onDelete={() => onDeleteLecture?.(lecture._id, section)}
-          />
-        ))}
+        {/* LIST LECTURES */}
+          {section.lectures && section.lectures.length > 0 ? (
+            section.lectures.map((lecture) => (
+              <BoxLesson
+                key={lecture._id}
+                title={lecture.title}
+                time={lecture.duration}
+                preview={lecture.preview}
+                onEdit={() => onEditLecture?.(lecture, section)}
+                onDelete={() => onDeleteLecture?.(lecture._id, section)}
+              />
+            ))
+          ) : (
+            <div className="text-sm text-gray-400 italic py-2">
+              Chưa có bài giảng! 
+            </div>
+          )}
+
+        {/* ADD LECTURE BUTTON */}
+          <BoxAddCourseLecture />
       </div>
     ),
   }));
 
   return (
-    <Collapse
-      accordion
-      items={items}
-      defaultActiveKey={[items[0].key]}
-      expandIconPlacement="start"
-      expandIcon={({ isActive }) => (
-        <CaretDownOutlined
-          rotate={isActive ? 180 : 0}
-          style={{ color: "white" }}
-          className="
-            transition-transform duration-300 ease-in-out
-          "
-        />
-      )}
-      style={{backgroundColor:"#1F2937", color:"white"}}
-    />
+    <div>
+      <div
+        className="flex justify-between items-center py-2 "
+      >
+        <div></div>
+        <BoxAddCourseSection />
+      </div>
+      <Collapse
+        accordion
+        items={items}
+        defaultActiveKey={[items[0].key]}
+        expandIconPlacement="start"
+        expandIcon={({ isActive }) => (
+          <CaretDownOutlined
+            rotate={isActive ? 180 : 0}
+            style={{ color: "white" }}
+            className="
+              transition-transform duration-300 ease-in-out
+            "
+          />
+        )}
+        style={{backgroundColor:"#1F2937", color:"white"}}
+      />
+    </div>
   );
 };
 

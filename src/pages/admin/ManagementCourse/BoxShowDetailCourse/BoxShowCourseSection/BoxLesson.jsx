@@ -16,7 +16,7 @@ export default function BoxLesson({
 }) {
   return (
     <div className="
-        group flex items-center justify-between px-3 py-2 rounded 
+        group flex items-center justify-between py-3 rounded px-[28px]
         transform transition duration-300 ease-in-out hover:bg-[#e0e0e0d8]">
       {/* LEFT */}
       <div className="flex items-center gap-2">

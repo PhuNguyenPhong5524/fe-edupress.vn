@@ -87,8 +87,8 @@ const AdminLayout = () => {
   ];
 
   return (
-    <Layout style={{ minHeight: '100vh', background: '#ffffff !important' }}>
-      <Sider trigger={null} collapsible collapsed={collapsed} >
+    <Layout style={{ minHeight: '100vh',  }}>
+      <Sider width={260} trigger={null} collapsible collapsed={collapsed} style={{padding:"15px"}}>
         <h1 className='text-[#ffffff] text-center py-[20px] text-[20px] font-bold' >
           {role === "admin" ? "Admin" : "Nhà cung cấp"}
         </h1>

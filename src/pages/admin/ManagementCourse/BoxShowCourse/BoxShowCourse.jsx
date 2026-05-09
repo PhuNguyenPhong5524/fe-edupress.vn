@@ -160,7 +160,7 @@ import { EyeOutlined } from "@ant-design/icons";
 // ];
 import { Link } from "react-router-dom";
 import BoxAddinfoCourse from "./BoxAddinfoCourse/BoxAddinfoCourse";
-import useFetchCourse from "../../../../hooks/useFetchCourse";
+import useFetchCourse from "../../../../hooks/useCourse/useFetchCourse";
 import useLoading from "../../../../hooks/useLoading";
 
 const BoxShowCourse = () => {

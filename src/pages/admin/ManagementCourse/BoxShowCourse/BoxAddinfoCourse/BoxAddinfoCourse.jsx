@@ -1,199 +1,184 @@
 import { useState } from "react";
-import { Modal, Form, Input, Button, Alert } from "antd";
-import axios from "axios";
-import { Select } from "antd";
+import { Modal, Form, Input, Button, Select } from "antd";
+import useFetchCategory from "../../../../../hooks/useCourse/useFetchCategory";
+import useAuth from "../../../../../hooks/useAuth";
+import usePostCourse from "../../../../../hooks/useCourse/usePostCourse";
+import { notification } from "antd";
+
 
 const { Option } = Select;
-  
+
 const BoxAddinfoCourse = ({ refetch }) => {
   const [open, setOpen] = useState(false);
-  const showModal = () => {
-    setOpen(true);
-  };
+  const [form] = Form.useForm();
 
-  const [category, setCategory] = useState(null);
-  const [provider, setProvider] = useState(null);
+  const { data: categoryData, isLoading: categoryLoading } = useFetchCategory();
+  const { user } = useAuth();
+  const { mutate: addCourse, isPending } = usePostCourse();
 
-  const categories = [
-    { id: "1", name: "Lập trình" },
-    { id: "2", name: "Thiết kế" },
-    { id: "3", name: "Marketing" },
-    { id: "4", name: "Kinh doanh" },
-  ];
+  const handleSubmit = async (values) => {
+    const payload = {
+      category_id: values.category,
+      course_title: values.courseName,
+      price: Number(values.price),
+      image_url: values.image_url,
+      video_url: values.video_url,
+      description: values.description,
+      duration: values.duration,
+      feature: false,
+    };
 
-  const handleChange = (value) => {
-    setCategory(value);
-    console.log("Selected:", value);
-  };
-  const handleChangeProvider = (value) => {
-    setProvider(value);
-    console.log("Selected:", value);
+    try {
+      await addCourse(payload);
+
+      notification.success({
+        title: "Thành công",
+        description: "Lưu thông tin khóa học thành công!",
+        placement: "topRight",
+        duration: 3,
+      });
+
+      setOpen(false);
+      form.resetFields();
+      refetch?.();
+    } catch (error) {
+      notification.error({
+        title: "Thất bại",
+        description:
+          error?.response?.data?.message || "Lưu khóa học thất bại!",
+        placement: "topRight",
+        duration: 3,
+      });
+    }
   };
 
   return (
     <>
-      <button 
-        onClick={showModal}
+      <button
+        onClick={() => setOpen(true)}
         className="
-          bg-[#FF7D35] text-white px-4 py-2 rounded transition duration-300 ease-in-out 
-          hover:scale-95 hover:opacity-65 cursor-pointer
-        " 
+          bg-[#FF7D35] text-white px-4 py-2 rounded
+          hover:scale-95 hover:opacity-70 transition
+        "
       >
         + Thêm khóa học
       </button>
+
       <Modal
         open={open}
         onCancel={() => setOpen(false)}
         footer={null}
+        destroyOnHidden
       >
-        <div>
-            <h1 className="text-[20px] font-semibold text-[#000000">Thêm khóa học mới</h1>
-            <Form
-                layout="vertical"
-                // onFinish={handleAdd}
-                autoComplete="off"
-                // disabled={loading}
-                className=""
-            >   
-                <div 
-                  className="w-full flex justify-between items-center gap-2"
-                >
-                  <Form.Item
-                      className="custom-form-item w-full"
-                      label={<span className="text-[12px]">Nhà cung cấp</span>}
-                      name="provider"
-                      rules={[
-                          { required: true, message: "Vui lòng nhập nhà cung cấp!" },
-                      ]}
-                  >
-                    <Input className="custom-input" disabled  defaultValue={`Nguyễn Văn A`}/>
-                  </Form.Item>
-                  
-                  <Form.Item
-                      className="custom-form-item w-full"
-                      label={<span className="text-[12px]">Danh mục</span>}
-                      name="category"
-                      rules={[
-                          { required: true, message: "Vui lòng nhập danh mục!" },
-                      ]}
-                  >
-                    <Select
-                      placeholder="Chọn danh mục"
-                      onChange={handleChange}
-                      value={category}
-                      style={{ 
-                        outline: "none", border: "1.5px solid #CBCBCB", borderRadius: "10px" }}
-                      className="
-                        w-full h-[40px] 
-                      "
-                    >
-                      {categories.map((item) => (
-                        <Option key={item.id} value={item.id}>
-                          {item.name}
-                        </Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
+        <h1 className="text-[20px] font-semibold mb-4">
+          Thêm khóa học mới
+        </h1>
 
-                </div>
-                
-                <div
-                  className="w-full flex justify-between items-center gap-2"
-                >
-                  <Form.Item
-                      className="custom-form-item w-full"
-                      label={<span className="text-[12px]">Tên khóa học</span>}
-                      name="courseName"
-                      rules={[
-                          { required: true, message: "Vui lòng nhập tên khóa học!" },
-                      ]}
-                  >
-                      <Input className="custom-input" placeholder="Nhập tên khóa học"/>
-                  </Form.Item>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          autoComplete="off"
+        >
+          {/* PROVIDER + CATEGORY */}
+          <div className="flex gap-2">
+            <Form.Item
+              label="Nhà cung cấp"
+              className="w-full"
+            >
+              <Input value={user?.username} disabled />
+            </Form.Item>
 
-                  <Form.Item
-                      className="custom-form-item w-full"
-                      label={<span className="text-[12px]">Giá khóa học</span>}
-                      name="price"
-                      rules={[
-                          { required: true, message: "Vui lòng nhập giá khóa học!" },
-                      ]}
-                  >
-                      <Input className="custom-input" placeholder="Nhập giá khóa học"/>
-                  </Form.Item>
+            <Form.Item
+              label="Danh mục"
+              name="category"
+              className="w-full"
+              rules={[{ required: true, message: "Chọn danh mục" }]}
+            >
+              <Select
+                loading={categoryLoading}
+                placeholder="Chọn danh mục"
+              >
+                {categoryData?.categories.map((item) => (
+                  <Option key={item._id} value={item._id}>
+                    {item.cate_name}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </div>
 
-                </div>
+          {/* COURSE NAME + PRICE */}
+          <div className="flex gap-2">
+            <Form.Item
+              label="Tên khóa học"
+              name="courseName"
+              className="w-full"
+              rules={[{ required: true, message: "Nhập tên khóa học" }]}
+            >
+              <Input placeholder="Nhập tên khóa học" />
+            </Form.Item>
 
-                <div
-                  className="w-full flex justify-between items-center gap-2"
-                >
-                  <Form.Item
-                      className="custom-form-item w-full"
-                      label={<span className="text-[12px]">Ảnh khóa học</span>}
-                      name="image_url"  
-                      rules={[
-                          { required: true, message: "Vui lòng nhập URL ảnh khóa học!" },
-                      ]}
-                  >
-                      <Input className="custom-input" placeholder="Nhập URL ảnh khóa học" />
-                  </Form.Item>
+            <Form.Item
+              label="Giá khóa học"
+              name="price"
+              className="w-full"
+              rules={[{ required: true, message: "Nhập giá khóa học" }]}
+            >
+              <Input type="number" placeholder="VD: 499000" />
+            </Form.Item>
+          </div>
 
-                  <Form.Item
-                        className="custom-form-item w-full"
-                        label={<span className="text-[12px]">Video khóa học</span>}
-                        name="video_url"
-                        rules={[
-                            { required: true, message: "Vui lòng nhập URL video khóa học!" },
-                        ]}
-                    >
-                        <Input className="custom-input" placeholder="Nhập URL video khóa học" />
-                  </Form.Item>
-                </div>
-                <Form.Item
-                  className="custom-form-item w-full"
-                  label={<span className="text-[12px]">Thời gian khóa học</span>}
-                  name="duration"
-                  rules={[
-                      { required: true, message: "Vui lòng nhập thời gian khóa học!" },
-                  ]}
-                >
-                      <Input className="custom-input" placeholder="Nhập thời gian khóa học" />
-                </Form.Item>
+          {/* IMAGE + VIDEO */}
+          <div className="flex gap-2">
+            <Form.Item
+              label="Ảnh khóa học"
+              name="image_url"
+              className="w-full"
+              rules={[{ required: true, message: "Nhập link ảnh" }]}
+            >
+              <Input placeholder="https://..." />
+            </Form.Item>
 
-                <Form.Item
-                    className="custom-form-item w-full"
-                    label={<span className="text-[12px]">Mô tả khóa học</span>}
-                    name="description"
-                    rules={[
-                        { required: true, message: "Vui lòng nhập mô tả khóa học!" },
-                    ]}
-                  >
-                      <Input.TextArea className="" placeholder="Nhập mô tả khóa học" rows={4}  />
-                </Form.Item>
+            <Form.Item
+              label="Video giới thiệu"
+              name="video_url"
+              className="w-full"
+              rules={[{ required: true, message: "Nhập link video" }]}
+            >
+              <Input placeholder="https://..." />
+            </Form.Item>
+          </div>
 
-{/* 
-                {message.content && (
-                    <Alert
-                        type={message.type}
-                        showIcon
-                        className="mb-3"
-                        description={<span className="text-[12px]">{message.content}</span>}
-                    />
-                )} */}
+          {/* DURATION */}
+          <Form.Item
+            label="Thời gian khóa học"
+            name="duration"
+            rules={[{ required: true, message: "Nhập thời gian" }]}
+          >
+            <Input placeholder="VD: 36 giờ" />
+          </Form.Item>
 
-                <Form.Item className="custom-form-item">
-                    <Button
-                        htmlType="submit"
-                        // loading={loading}
-                        className="custom-btn w-full"
-                    >
-                        Xác nhận thêm
-                    </Button>
-                </Form.Item>
-            </Form>
-        </div>
+          {/* DESCRIPTION */}
+          <Form.Item
+            label="Mô tả khóa học"
+            name="description"
+            rules={[{ required: true, message: "Nhập mô tả" }]}
+          >
+            <Input.TextArea rows={4} placeholder="Mô tả khóa học..." />
+          </Form.Item>
+
+          <Button
+            htmlType="submit"
+            loading={isPending}
+            className="w-full bg-[#FF7D35] text-white"
+          >
+            Xác nhận thêm
+          </Button>
+        </Form>
       </Modal>
     </>
   );
 };
+
 export default BoxAddinfoCourse;

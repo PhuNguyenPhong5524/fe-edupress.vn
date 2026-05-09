@@ -7,7 +7,7 @@ import EditCourseIcon from "../../../../components/icons/EditCourseIcon.jsx";
 import BoxShowCourseInfo from "./BoxShowCourseInfo/BoxShowCourseInfo.jsx";
 import BoxShowCourseRequest from "./BoxShowCourseRequest/BoxShowCourseRequest.jsx";
 import BoxShowCourseOverview from "./BoxShowCourseOverview/BoxShowCourseOverview.jsx";
-import useFetchCourseDetail from "../../../../hooks/useFetchCourseDetail.js";
+import useFetchCourseDetail from "../../../../hooks/useCourse/useFetchCourseDetail.js";
 import BoxShowCourseSection from "./BoxshowCourseSection/BoxShowCourseSection.jsx";
 
 
@@ -22,22 +22,18 @@ export default function BoxShowDetailCourse() {
 
     const items = [
         {
-        key: "1",
-        label: "Thông Tin Khóa Học",
-        children: (
-            <BoxShowCourseInfo 
-                showCourse={showCourse?.course}
-            />
-        ),
+            key: "1",
+            label: "Thông Tin Khóa Học",
+            children: (
+                <BoxShowCourseInfo 
+                    showCourse={showCourse?.course}
+                />
+            ),
         },
         {
             key: "2",
-            label: "Yêu cầu",
-            children: 
-                <BoxShowCourseRequest 
-                    showCourse={showCourse?.requests}
-                /> 
-            ,
+            label: "Nội dung bài học",
+            children: <BoxShowCourseSection showCoure={showCourse?.sections} />,
         },
         {
             key: "3",
@@ -50,9 +46,14 @@ export default function BoxShowDetailCourse() {
         },
         {
             key: "4",
-            label: "Bài học",
-            children: <BoxShowCourseSection showCoure={showCourse?.sections} />,
-        },
+            label: "Yêu cầu",
+            children: 
+                <BoxShowCourseRequest 
+                    showCourse={showCourse?.requests}
+                /> 
+            ,
+        }
+    
     ];
     return (
         <div className="h-auto bg-gray-100 py-4 px-4 rounded-[5px]">
