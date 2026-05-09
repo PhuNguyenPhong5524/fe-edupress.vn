@@ -8,6 +8,7 @@ import BoxShowCourseInfo from "./BoxShowCourseInfo/BoxShowCourseInfo.jsx";
 import BoxShowCourseRequest from "./BoxShowCourseRequest/BoxShowCourseRequest.jsx";
 import BoxShowCourseOverview from "./BoxShowCourseOverview/BoxShowCourseOverview.jsx";
 import useFetchCourseDetail from "../../../../hooks/useFetchCourseDetail.js";
+import BoxShowCourseSection from "./BoxshowCourseSection/BoxShowCourseSection.jsx";
 
 
 export default function BoxShowDetailCourse() {
@@ -50,7 +51,7 @@ export default function BoxShowDetailCourse() {
         {
             key: "4",
             label: "Bài học",
-            children: <div className="p-4">Nội dung Sections...</div>,
+            children: <BoxShowCourseSection showCoure={showCourse?.sections} />,
         },
     ];
     return (
