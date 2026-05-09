@@ -1,11 +1,11 @@
 
 import React, { useState } from "react";
 import { Tabs, Card } from "antd";
-import BoxEditInfoCourse from "./BoxEditInfoCourse/BoxEditInfoCourse.jsx";
 import { Link } from "react-router";
 import ChevronLeftIcon from "../../../../components/icons/ChevronLeftIcon.jsx";
 import EditCourseIcon from "../../../../components/icons/EditCourseIcon.jsx";
 import CloseIcon from "../../../../components/icons/CloseIcon.jsx";
+import BoxShowCourseInfo from "./BoxShowCourseInfo/BoxShowCourseInfo.jsx";
 
 const course = {
   _id: "69e1a960c87dee8a44fd30d7",
@@ -70,128 +70,7 @@ export default function BoxShowDetailCourse() {
         key: "1",
         label: "Thông Tin Khóa Học",
         children: (
-            <div>
-                <div className="flex justify-between items-center mb-3">
-                    <div className="border-l-[3px] border-l-[#FF7D35] pl-2">
-                        <h2 className="font-semibold text-[#989898] text-[18px]">Yêu cầu</h2>
-                    </div>
-                    <BoxEditInfoCourse />
-                </div>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                {/* Video */}
-                    <div 
-                        className="
-                            border border-gray-200 rounded-[5px] p-4 h-auto bg-[#ffffff] overflow-hidden
-                        "
-                        >
-                        <div className="aspect-video w-full">
-                        <iframe
-                            src={course.video_url}
-                            title="video"
-                            className="w-full h-full rounded"
-                            allowFullScreen
-                        />
-                        </div>
-                    </div>
-
-                {/* Info */}
-                <div 
-                className="
-                    border border-gray-200 rounded-tl-[5px] rounded-tr-[5px] 
-                    rounded-b-[5px] h-auto bg-[#ffffff] overflow-hidden 
-                "
-                >
-                    <p className="bg-[#efefef] text-[#000000] px-2 py-3 text-[16px] font-bold rounded-[5px]">
-                        <sup className="text-red-500 font-semibold">*</sup>Thông tin khóa học
-                    </p>
-                    <div className="px-4 py-3 space-y-3">
-                    <p 
-                        className=" 
-                        border-b border-b-[#d4d4d4]  text-[#000000] text-[14px] pb-3
-                        "
-                    >
-                        <strong className="pr-2">
-                        #Mã khóa học:
-                        </strong> 
-                        {course._id}
-                    </p>
-                    <div 
-                        className="
-                        flex justify-between flex-col md:flex-row border-b 
-                        border-b-[#d4d4d4] pb-3
-                        "
-                    >
-                        <p className="text-[#000000] text-[14px]">
-                        <strong className="pr-2">Ngày tạo:</strong> 
-                        {course.create_At}
-                        </p>
-                        <p className="text-[#a7a7a7] text-[14px]">—</p>
-                        <p className="text-[#000000] text-[14px]">
-                        <strong className="pr-2">Ngày cập nhật:</strong> 
-                        {course.update_At}
-                        </p>
-                    </div>
-                    <p className="text-[#000000] text-[14px]">
-                        <strong className="pr-2">Danh mục:</strong> 
-                        {course.category_name}
-                    </p>
-                    <p className="text-[#000000] text-[14px]">
-                        <strong className="pr-2">Giảng viên:</strong> 
-                        {course.provider_name}
-                    </p>
-                    <p className="text-[#000000] text-[14px]">
-                        <strong className="pr-2">Số học viên:</strong> 
-                        {course.students}
-                    </p>
-                    <p className="text-[#000000] text-[14px]">
-                        <strong className="pr-2">Thời lượng:</strong> 
-                        {course.duration}
-                    </p>
-                    </div>
-                    <div className="flex items-center justify-between px-4 pt-2 border-t border-t-[#d4d4d4] ">
-                    <div className="flex items-center">
-                        <p className="pr-2 text-[14px] font-bold text-[#000000] ">Giá khóa học:</p> 
-                        <span className="text-[#e70000] text-[18px] font-bold">
-                            { course.price === 0 
-                                ? <span className="text-green-400 font-semibold">Free</span>
-                                : `${Number(course.price).toLocaleString('vi-VN')} VND`
-                            }
-                        </span>
-                    </div>
-                    <div className="flex items-center">
-                        <p className="pr-2 text-[14px] font-bold text-[#000000] ">Giá giảm:</p> 
-                        <span className="text-[#e70000] text-[18px] font-bold">
-                            { course.price_promotion === null || course.price_promotion === 0 
-                                ? <span className="text-[#d8d8d8] font-semibold">—</span>
-                                : `${Number(course.price_promotion).toLocaleString('vi-VN')} VND`
-                            }
-                        </span>
-                    </div>
-                    </div>
-                    
-                </div>
-
-                {/* Description */}
-                    <div 
-                        className="
-                            col-span-2 border border-gray-200 rounded-tl-[5px] rounded-tr-[5px] rounded-b-[5px] bg-[#ffffff] overflow-hidden
-                            mb-4 
-                        "
-                    >
-                        <p className="bg-[#efefef] text-[#000000] px-2 py-3 text-[16px] font-bold">
-                            <sup className="text-red-500 font-semibold">*</sup>Mô tả khóa học
-                        </p>
-                        <div className="space-y-2 text-sm md:text-base px-4 pt-3 pb-[5px]" >
-                            <textarea
-                                disabled
-                                rows="6"
-                                defaultValue={course.description}
-                                className="w-full border p-2 border-gray-200 rounded bg-[#F5F5F5]"
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <BoxShowCourseInfo />
         ),
         },
         {

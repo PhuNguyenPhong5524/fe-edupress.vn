@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Modal, Form, Input, Button, Alert } from "antd";
 import axios from "axios";
@@ -5,7 +6,7 @@ import { Select } from "antd";
 
 const { Option } = Select;
   
-const BoxAddinfoCourse = ({ refetch }) => {
+const BoxEditInfoCourse = ({ refetch }) => {
   const [open, setOpen] = useState(false);
   const showModal = () => {
     setOpen(true);
@@ -39,7 +40,7 @@ const BoxAddinfoCourse = ({ refetch }) => {
           hover:scale-95 hover:opacity-65 cursor-pointer
         " 
       >
-        + Thêm khóa học
+        Chỉnh sửa khóa học
       </button>
       <Modal
         open={open}
@@ -47,7 +48,7 @@ const BoxAddinfoCourse = ({ refetch }) => {
         footer={null}
       >
         <div>
-            <h1 className="text-[20px] font-semibold text-[#000000">Thêm khóa học mới</h1>
+            <h1 className="text-[20px] font-semibold text-[#000000">Chỉnh sửa khóa học</h1>
             <Form
                 layout="vertical"
                 // onFinish={handleAdd}
@@ -196,4 +197,4 @@ const BoxAddinfoCourse = ({ refetch }) => {
     </>
   );
 };
-export default BoxAddinfoCourse;
+export default BoxEditInfoCourse;
