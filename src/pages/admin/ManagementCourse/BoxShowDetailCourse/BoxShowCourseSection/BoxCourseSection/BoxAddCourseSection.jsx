@@ -1,91 +1,111 @@
-
 import { useState } from "react";
-import { Modal, Form, Input, Button, Alert } from "antd";
-import axios from "axios";
-import { Select } from "antd";
+import { Modal, Form, Input, Button, notification } from "antd";
+import { useNavigate } from "react-router-dom";
+import usePostCourseSection from "../../../../../../hooks/useCourse/usePostCourseSection";
+import { useParams } from "react-router";
 
-
-
-const { Option } = Select;
-  
-const BoxAddCourseSection = ({ }) => {
+const BoxAddCourseSection = ({ refetch }) => {
   const [open, setOpen] = useState(false);
-  const showModal = () => {
-    setOpen(true);
-  };
+  const [form] = Form.useForm();
+  const { _id: courseId } = useParams();
+  const navigate = useNavigate();
 
+  const { mutate: addSection, isPending } = usePostCourseSection();
+
+  const handleAdd = (values) => {
+    const payload = {
+      chapter_title: values.chapter_title,
+      duration: values.duration,
+    };
+
+    addSection(
+      { courseId, payload },
+      {
+        onSuccess: () => {
+          notification.success({
+            title: "Thành công",
+            description: "Thêm bài học/section thành công!",
+          });
+
+          setOpen(false);
+          form.resetFields();
+          refetch?.();
+        },
+        onError: (error) => {
+          const status = error?.response?.status;
+
+          if (status === 401) {
+            notification.error({
+              title: "Phiên đăng nhập đã hết hạn!",
+              description: "Vui lòng đăng nhập lại",
+            });
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            setTimeout(() => navigate("/login"), 1200);
+            return;
+          }
+
+          notification.error({
+            title: "Thất bại",
+            description: error?.response?.data?.message || "Thêm section thất bại",
+          });
+        },
+      }
+    );
+  };
 
   return (
     <>
-      <button 
-        onClick={showModal}
+      <button
+        onClick={() => setOpen(true)}
         className="
-          bg-[#FF7D35] text-white px-4 py-2 rounded transition duration-300 ease-in-out 
+          bg-[#FF7D35] text-white px-4 py-2 rounded transition duration-300 ease-in-out
           hover:scale-95 hover:opacity-65 cursor-pointer
-        " 
+        "
       >
         + Thêm bài học
       </button>
-      <Modal
-        open={open}
-        onCancel={() => setOpen(false)}
-        footer={null}
-      >
-        <div>
-            <h1 className="text-[20px] font-semibold text-[#000000">Thêm bài học</h1>
-            <Form
-                layout="vertical"
-                // onFinish={handleAdd}
-                autoComplete="off"
-                // disabled={loading}
-                className=""
-            >   
-                <Form.Item
-                    className="custom-form-item w-full"
-                    label={<span className="text-[12px]">Mã</span>}
-                    name="_id"
-                    rules={[
-                        { required: true, message: "Vui lòng nhập nhà cung cấp!" },
-                    ]}
-                >
-                  <Input className="custom-input" disabled  defaultValue={`121212121212313343535`}/>
-                </Form.Item>
 
-                <Form.Item
-                  className="custom-form-item w-full"
-                  label={<span className="text-[12px]">Tên bài học</span>}
-                  name="chapter_title"
-                  rules={[
-                      { required: true, message: "Vui lòng nhập tên bài học!" },
-                  ]}
-                >
-                      <Input className="custom-input" placeholder="Nhập tên bài học" />
-                </Form.Item>
+      <Modal open={open} onCancel={() => setOpen(false)} footer={null} destroyOnHidden>
+        <h1 className="text-[20px] font-semibold text-[#000000] mb-4">
+          Thêm bài học
+        </h1>
 
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleAdd}   
+          autoComplete="off"
+        >
 
-{/* 
-                {message.content && (
-                    <Alert
-                        type={message.type}
-                        showIcon
-                        className="mb-3"
-                        description={<span className="text-[12px]">{message.content}</span>}
-                    />
-                )} */}
+          <Form.Item
+            label={<span className="text-[12px]">Tên bài học</span>}
+            name="chapter_title"
+            rules={[{ required: true, message: "Vui lòng nhập tên bài học!" }]}
+          >
+            <Input className="custom-input" placeholder="Nhập tên bài học" />
+          </Form.Item>
 
-                <Form.Item className="custom-form-item">
-                    <Button
-                        htmlType="submit"
-                        // loading={loading}
-                        className="custom-btn w-full"
-                    >
-                        Xác nhận thêm
-                    </Button>
-                </Form.Item>
-            </Form>
-        </div>
+          <Form.Item
+            label={<span className="text-[12px]">Thời gian</span>}
+            name="duration"
+            rules={[{ required: true, message: "Vui lòng nhập thời gian bài học!" }]}
+          >
+            <Input className="custom-input" placeholder="Nhập thời gian bài học" />
+          </Form.Item>
+
+          <Button
+            htmlType="submit"
+            loading={isPending}
+            className="w-full bg-[#FF7D35] text-white"
+            style={{backgroundColor:"#FF7D35" , color:'#ffffff'}}
+          >
+            Xác nhận thêm
+          </Button>
+        </Form>
       </Modal>
     </>
   );
 };
+
 export default BoxAddCourseSection;

@@ -1,32 +1,33 @@
 
 
+import { Button, Spin } from "antd";
 import BoxEditInfoCourse from "./BoxEditInfoCourse/BoxEditInfoCourse";
-
-const course = {
-  _id: "69e1a960c87dee8a44fd30d7",
-  course_title: "Phân tích Dữ Liệu Bằng SQL Trong 8 Giờ",
-  category_name: "Lập trình",
-  provider_name: "Nguyễn Văn A",
-  price: 2209000,
-  price_promotion: 0,
-  students: 700,
-  duration: "8h35'",
-  image_url: "https://img-c.udemycdn.com/course/240x135/5534420_9a20_5.jpg",
-  video_url: "https://www.youtube.com/embed/CkreAh5KOx0",
-  description: "Khoá học này cung cấp một phương pháp thực hành cho những người muốn trở thành nhà phát triển frontend. Qua các dự án thực hành, người tham gia sẽ đối mặt với các tình huống thực tế, học các kỹ thuật giải quyết vấn đề từ cơ bản đến nâng cao. Cụ thể, khóa học tập trung vào phát triển web sử dụng các công nghệ frontend tiên tiến như: TypeScript, ReactJS 18, Next.js 14, Material UI, Redux Toolkit, Next Auth, Yup, CI-CD, tối ưu SEO, Redux thunks, SocketIo, React Query, Firebase, Storybook, Jest ... Đặc biệt sau khi kết thúc khóa học , mấy bạn sẽ biết được cách tìm ra nguyên nhân của lỗi và biết cách research để giải quyết vấn đề",
-  create_At: "2024-06-15",
-  update_At: "2024-06-15",
-};
+import {ReloadOutlined } from "@ant-design/icons";
+import useLoading from "../../../../../hooks/useLoading";
 
 
-const BoxShowCourseInfo = ({ showCourse }) => {
+const BoxShowCourseInfo = ({ showCourse, refetch , isFetching, isLoading }) => {
+
+    
+    const loading = useLoading(isLoading || isFetching, 300);
+
+    if (loading) {
+        return (
+        <div className="flex justify-center items-center h-[300px]">
+            <Spin size="large" />
+        </div>
+        );
+    }
+
     return(
         <div>
             <div className="flex justify-between items-center mb-3">
                 <div className="border-l-[3px] border-l-[#FF7D35] pl-2">
-                    <h2 className="font-semibold text-[#989898] text-[18px]">Yêu cầu</h2>
+                    <h2 className="font-semibold text-[#989898] text-[18px]">Thực hiện</h2>
                 </div>
-                <BoxEditInfoCourse />
+          
+                <BoxEditInfoCourse course={showCourse} refetch={refetch} />
+               
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Video */}
@@ -35,14 +36,24 @@ const BoxShowCourseInfo = ({ showCourse }) => {
                         border border-gray-200 rounded-[5px] p-4 h-auto bg-[#ffffff] overflow-hidden
                     "
                     >
-                    <div className="aspect-video w-full">
-                    <iframe
+                    
+                    <div className="aspect-video w-full flex items-center justify-center bg-gray-100">
+                    {showCourse?.video_url?.trim() ? (
+                        <iframe
+                        className="w-full h-full"
                         src={showCourse.video_url}
-                        title="video"
-                        className="w-full h-full rounded"
+                        title="YouTube video player"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
-                    />
+                        />
+                    ) : (
+                        <p className="text-gray-400 text-sm font-semibold">
+                        Chưa có video
+                        </p>
+                    )}
                     </div>
+
                 </div>
 
             {/* Info */}
@@ -84,11 +95,11 @@ const BoxShowCourseInfo = ({ showCourse }) => {
                 </div>
                 <p className="text-[#000000] text-[14px]">
                     <strong className="pr-2">Danh mục:</strong> 
-                    {showCourse.category}
+                    {showCourse.category_name}
                 </p>
                 <p className="text-[#000000] text-[14px] ">
                     <strong className="pr-2">Giảng viên:</strong> 
-                    {showCourse.provider}
+                    {showCourse.provider_name}
                 </p>
                 <p className="text-[#000000] text-[14px]">
                     <strong className="pr-2">Số học viên:</strong> 

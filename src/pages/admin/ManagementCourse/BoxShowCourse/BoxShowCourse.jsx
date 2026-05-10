@@ -204,12 +204,14 @@ const BoxShowCourse = () => {
     {
       title: "Danh mục",
       dataIndex: "category",
-      render: (cat) => <Tag color="pink">{cat}</Tag>,
+      key: "category",
+      render: (text) => <Tag color="pink">{text}</Tag>,
     },
-     {
+    {
       title: "Nhà cung cấp",
       dataIndex: "provider",
-      render: (cat) => <Tag color="blue">{cat}</Tag>,
+      key: "provider",
+      render: (text) => <Tag color="blue">{text}</Tag>,
     },
     {
       title: "Giá",

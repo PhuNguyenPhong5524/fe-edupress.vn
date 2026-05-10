@@ -14,7 +14,7 @@ import BoxShowCourseSection from "./BoxshowCourseSection/BoxShowCourseSection.js
 export default function BoxShowDetailCourse() {
     const [activeTab, setActiveTab] = useState("1");
     const { _id: courseId } = useParams();
-    const { data: showCourse, isLoading, error } = useFetchCourseDetail(courseId);
+    const { data: showCourse, isLoading, error , refetch, isFetching} = useFetchCourseDetail(courseId);
 
     if (isLoading) return <>Loading...</>;
     if (error) return <>Error: {error.message}</>;
@@ -26,14 +26,24 @@ export default function BoxShowDetailCourse() {
             label: "Thông Tin Khóa Học",
             children: (
                 <BoxShowCourseInfo 
+                    courseId={courseId}
                     showCourse={showCourse?.course}
+                    refetch={refetch}
+                    isFetching={isFetching}
+                    isLoading={isLoading}
                 />
             ),
         },
         {
             key: "2",
             label: "Nội dung bài học",
-            children: <BoxShowCourseSection showCoure={showCourse?.sections} />,
+            children: <BoxShowCourseSection 
+                        courseId={courseId} 
+                        showCoure={showCourse?.sections} 
+                        refetch={refetch} 
+                        isFetching={isFetching} 
+                        isLoading={isLoading} 
+                    />,
         },
         {
             key: "3",

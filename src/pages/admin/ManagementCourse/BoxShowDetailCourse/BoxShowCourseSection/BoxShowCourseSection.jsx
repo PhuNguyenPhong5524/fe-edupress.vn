@@ -1,10 +1,11 @@
-import { Collapse, Button, Space, Popconfirm } from "antd";
+import { Collapse, Button, Space, Popconfirm, Spin, notification } from "antd";
 import {
   CaretDownOutlined,
   ClockCircleOutlined,
   EditOutlined,
   DeleteOutlined,
   PlusOutlined,
+  ReloadOutlined,
 } from "@ant-design/icons";
 import BoxLesson from "./BoxLesson";
 import EditCourseIcon from "../../../../../components/icons/EditCourseIcon";
@@ -12,36 +13,35 @@ import CloseIcon from "../../../../../components/icons/CloseIcon";
 import BoxEditCourseSection from "./BoxCourseSection/BoxEditCourseSection";
 import BoxAddCourseSection from "./BoxCourseSection/BoxAddCourseSection";
 import BoxAddCourseLecture from "./BoxCourseLecture/BoxAddCourseLecture";
+import useLoading from "../../../../../hooks/useLoading";
+import useDeleteCourseSection from "../../../../../hooks/useCourse/useDeleteCourseSection";
 
 const BoxShowCourseSection = ({
   showCoure,
+  courseId,
+  refetch,
+  isLoading,
+  isFetching,
   onEditSection,
   onDeleteSection,
   onAddLecture,
   onEditLecture,
   onDeleteLecture,
 }) => {
-  const sections = showCoure;
+  const sections = Array.isArray(showCoure) ? showCoure : [];
 
-  if (!Array.isArray(sections) || sections.length === 0) return null;
+  const { mutate: deleteSection, isPending  } = useDeleteCourseSection();
+
 
   const items = sections.map((section) => ({
     key: section._id,
-
     label: (
-      <div
-        className="
-          flex justify-between items-start w-full
-          px-4 py-2 rounded-md
-          
-        "
-      >
+      <div className="flex justify-between items-start w-full px-4 py-2">
         {/* LEFT */}
         <div className="flex flex-col gap-1 text-[12px] lg:text-[14px]">
           <span className="font-semibold text-white">
             {section.chapter_title}
           </span>
-
           <div className="flex items-center gap-3 text-white text-[12px] opacity-90">
             <span>{section.lectures?.length || 0} bài giảng</span>
             <span>{section.duration}</span>
@@ -49,93 +49,129 @@ const BoxShowCourseSection = ({
         </div>
 
         {/* RIGHT */}
-        <Space size="small" style={{paddingRight:"15px"}}>
-            
-            < BoxEditCourseSection
-
-            />
-            <Popconfirm
-                title="Bạn chắc chắn muốn xóa khóa học?"
-                // onConfirm={}
+        <Space size="small" style={{ paddingRight: "15px" }}>
+          <BoxEditCourseSection 
+            section={section} 
+          />
+          <Popconfirm
+              title="Bạn chắc chắn muốn xóa chương học?"
+              description="Toàn bộ bài giảng trong chương sẽ bị xóa"
+              onConfirm={() =>
+                deleteSection(
+                  {
+                    courseId,
+                    sectionId: section._id,
+                  },
+                  {
+                    onSuccess: () => {
+                      notification.success({
+                        title: "Thành công",
+                        description: "Xóa chương học thành công!",
+                      })
+                      refetch();  
+                    },
+                    onError: (error) => {
+                      notification.error({
+                        title: "Thất bại",
+                        description:
+                          error?.response?.data?.message ||
+                          "Xóa chương học thất bại",
+                      });
+                    },
+                  }
+                )
+              }
             >
-                <button
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        onDeleteSection?.(section._id);
-                    }}
-                    className="
-                        text-red-500 hover:text-red-700 transition p-2 
-                        duration-300 ease-in-out hover:bg-[#ffd5bf] rounded-[5px]
-                        hover:opacity-65 cursor-pointer hover:scale-125
-                    "
-                >
-                    <CloseIcon 
-                        size={18} 
-                        className="
-                            
-                        "
-                    />
-                </button>
+              <button className="text-red-500 hover:text-red-700 p-2">
+                <CloseIcon size={18} />
+              </button>
             </Popconfirm>
         </Space>
       </div>
     ),
 
     children: (
-      <div
-        className="
-          flex flex-col gap-2
-          px-5 py-3
-        "
-      >
-        {/* LIST LECTURES */}
-          {section.lectures && section.lectures.length > 0 ? (
-            section.lectures.map((lecture) => (
-              <BoxLesson
-                key={lecture._id}
-                title={lecture.title}
-                time={lecture.duration}
-                preview={lecture.preview}
-                onEdit={() => onEditLecture?.(lecture, section)}
-                onDelete={() => onDeleteLecture?.(lecture._id, section)}
-              />
-            ))
-          ) : (
-            <div className="text-sm text-gray-400 italic py-2">
-              Chưa có bài giảng! 
-            </div>
-          )}
+      <div className="flex flex-col gap-2 px-[55px] py-3">
+        {section.lectures?.length > 0 ? (
+          section.lectures.map((lecture) => (
+            <BoxLesson
+              key={lecture._id}
+              title={lecture.title}
+              time={lecture.duration}
+              preview={lecture.preview}
+              onEdit={() => onEditLecture?.(lecture, section)}
+              onDelete={() => onDeleteLecture?.(lecture._id, section)}
+            />
+          ))
+        ) : (
+          <p className="text-sm text-gray-400 italic ">
+            Chưa có bài giảng!
+          </p>
+        )}
 
-        {/* ADD LECTURE BUTTON */}
-          <BoxAddCourseLecture />
+        <BoxAddCourseLecture 
+        
+        />
       </div>
     ),
   }));
+  const loading = useLoading(isLoading || isFetching, 300);
 
-  return (
-    <div>
-      <div
-        className="flex justify-between items-center py-2 "
-      >
-        <div></div>
-        <BoxAddCourseSection />
+  if (loading) {
+      return (
+      <div className="flex justify-center items-center h-[300px]">
+          <Spin size="large" />
       </div>
-      <Collapse
-        accordion
-        items={items}
-        defaultActiveKey={[items[0].key]}
-        expandIconPlacement="start"
-        expandIcon={({ isActive }) => (
-          <CaretDownOutlined
-            rotate={isActive ? 180 : 0}
-            style={{ color: "white" }}
-            className="
-              transition-transform duration-300 ease-in-out
-            "
-          />
-        )}
-        style={{backgroundColor:"#1F2937", color:"white"}}
-      />
+      );
+  }
+  return (
+    <div >
+      {/* HEADER – LÚC NÀO CŨNG HIỆN */}
+      <div className="flex justify-end py-2 gap-4">
+        <button
+          onClick={refetch}
+          disabled={isFetching}
+          className="
+            border border-dashed border-[#c8c8c8]
+            px-3 py-2 rounded-[5px]
+            transition
+            hover:scale-95
+            disabled:opacity-50
+            disabled:cursor-not-allowed
+          "
+        >
+          <ReloadOutlined spin={isFetching} /> Làm mới
+        </button>
+        <BoxAddCourseSection 
+          refetch={refetch}
+        />
+      </div>
+
+      {/* NẾU CHƯA CÓ DỮ LIỆU */}
+      {sections.length === 0 && (
+        <div className="border border-dashed border-gray-300 rounded-md p-6 text-center bg-white mb-4">
+          <p className="text-gray-400 italic">
+            Chưa có thông tin chương học
+          </p>
+        </div>
+      )}
+
+      {/* NẾU CÓ DỮ LIỆU */}
+      {sections.length > 0 && (
+        <Collapse
+          accordion
+          items={items}
+          defaultActiveKey={[items[0]?.key]}
+          expandIconPlacement="start"
+          expandIcon={({ isActive }) => (
+            <CaretDownOutlined
+              rotate={isActive ? 180 : 0}
+              style={{ color: "white" }}
+            />
+          )}
+          style={{ backgroundColor: "#1F2937", marginBottom: "15px" }}
+        />
+      )}
     </div>
   );
 };
