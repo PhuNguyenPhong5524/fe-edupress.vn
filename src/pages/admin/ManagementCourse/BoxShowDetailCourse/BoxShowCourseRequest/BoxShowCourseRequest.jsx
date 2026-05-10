@@ -42,7 +42,7 @@ const BoxShowCourseRequest = ({ courseId, showCourse , refetch } ) => {
                             {item.request_name}
 
                             <div className="flex items-center">
-                                <BoxEditCourseRequest  request={item} />
+                                <BoxEditCourseRequest courseId={courseId} request={item} refetch={refetch} />
 
                                 <Popconfirm
                                     title="Bạn chắc chắn muốn xóa yêu cầu này?"

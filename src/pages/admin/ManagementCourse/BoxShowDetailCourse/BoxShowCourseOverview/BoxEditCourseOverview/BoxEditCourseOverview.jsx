@@ -45,10 +45,21 @@ const BoxEditCourseOverview = ({ overview, courseId, refetch }) => {
 
   return (
     <>
-      <button onClick={() => setOpen(true)} className="p-2">
-        <EditCourseIcon size={18} />
+      <button
+        onClick={() => setOpen(true)}
+        className="
+                text-blue-500 hover:text-blue-700 transition p-2 group
+            duration-300 ease-in-out hover:bg-[#ffd5bf] rounded-[5px]
+            hover:scale-105 hover:opacity-65 cursor-pointer 
+        " 
+      >
+          <EditCourseIcon 
+              size={18}
+              className="
+                  group-hover:scale-125 group-hover:fill-blue-500
+              "
+          />
       </button>
-
       <Modal open={open} onCancel={() => setOpen(false)} footer={null}>
         <h1 className="text-[20px] font-semibold text-black">
           Sửa tổng quan khóa học

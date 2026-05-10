@@ -7,8 +7,10 @@ import { useCartStore } from "../../../stores/cart.store";
 import BookOpenIcon from "../../icons/BookOpen";
 import HistoryIcon from "../../icons/HistoryIcon";
 import {
+    HomeFilled,
   VideoCameraOutlined,
 } from '@ant-design/icons';
+import { use } from "react";
 
 const MenuUser = ({t, user, logout, isAuthenticated, getAvatarLetter, handleChangePassword, handleNotification}) => {
     const nav = useNavigate();
@@ -59,6 +61,14 @@ const MenuUser = ({t, user, logout, isAuthenticated, getAvatarLetter, handleChan
                                         <p className="text-[#a4a4a4] text-[14px] font-regular p-0 m-0">{user?.email}</p>
                                     </div>
                                 </div>
+                                {user?.role === "provider" && (
+                                      <li 
+                                    className="menu-item" 
+                                >   
+                                        <HomeFilled />
+                                        <Link to="/">Trang chủ</Link>
+                                    </li>
+                                )}
                                 <li 
                                     className="menu-item" 
                                 > 
@@ -86,7 +96,15 @@ const MenuUser = ({t, user, logout, isAuthenticated, getAvatarLetter, handleChan
                                     <HistoryIcon size={20} />
                                     <Link to="/checkout-history">{t('header.chechkoutHistory')}</Link> 
                                 </li>
-                                
+                                {user?.role !== "provider" && user?.role === "customer" && (
+                                      <li 
+                                    className="menu-item" 
+                                >   
+                                        <VideoCameraOutlined />
+                                        <Link to="/register-provider">Trở thành nhà cung cấp</Link>
+                                    </li>
+                                )}
+
                                 {user?.role === "provider" && (
                                       <li 
                                     className="menu-item" 

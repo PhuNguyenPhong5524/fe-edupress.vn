@@ -9,12 +9,13 @@ import BoxBannerSmall from '../../../components/BoxBannerSmall';
 import BoxOverviewInstructor from './BoxOverviewInstructor/BoxOverviewInstructor'
 import BoxShowCourseCategory from './BoxShowCourseCategory/BoxShowCourseCategory';
 import { useTranslation } from 'react-i18next';
-
+import useGetAllCourse from '../../../hooks/useCourse/useGetAllCouse';
 
 const HomePage = () => {
     const { t }= useTranslation();
     const {data: categories, loading} = useFetchData('categories');
     const {data: courses, loading: loadingCourse } = useFetchData('courses');
+    const { data: showCourse } = useGetAllCourse();
     return (
         <div>
             {/* <!-- Banner --> */}
@@ -33,11 +34,11 @@ const HomePage = () => {
                             btnsw={'feature'}
                         />
                     {/* <!-- Section khóa học mới--> */}
-                        <BoxShowNewCourse 
+                        {/* <BoxShowNewCourse 
                             courses={courses} 
                             loading={loadingCourse} 
                             btnsw={'newCour'}
-                        />
+                        /> */}
                     {/* <!-- Box Banner Quảng bá khóa học--> */}
                         <BoxBannerSmall 
                             titleSmall={t('home.banner_Small.title_small')}

@@ -1,93 +1,50 @@
+import { Table, Tag } from "antd";
 import { useMemo } from "react";
-import { Table, Space, Tag, Popconfirm, message } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
-import axios from "axios";
-import useFetchData from "../../../api/useFetchData";
-import BoxAddUser from "./BoxAddUser/BoxAddUser";
-import BoxEditUser from "./BoxEditUser/BoxEditUser";
+import useFetchUser from "../../../hooks/useFetchUser";
 
 const ManagementUsers = () => {
-
-  const { data: users, loading, refetch } = useFetchData("users");
+  const { data: users = [], isLoading } = useFetchUser();
 
   const showUsers = useMemo(() => {
-    return [...users].sort((a, b) =>
-      b._id.localeCompare(a._id) 
-    );
+    return [...users].sort((a, b) => b._id.localeCompare(a._id));
   }, [users]);
-
-  // 🗑 Xóa user
-  const handleDelete = async (_id) => {
-    try {
-      await axios.delete(`https://mindx-mockup-server.vercel.app/api/resources/users/${_id}?apiKey=6957348a9dda81df11d0c527`);
-      message.success("Xóa thành công");
-      refetch(); // Reload data
-    } catch (error) {
-      message.error("Xóa thất bại");
-    }
-  };
-
-  // const handleEdit = (record) => {
-  //   console.log("Edit user:", record);
-  //   message.info("Chức năng sửa đang phát triển");
-  // };
 
   const columns = [
     {
       title: "Tên",
       dataIndex: "username",
+      key: "username",
     },
     {
       title: "Email",
       dataIndex: "email",
+      key: "email",
     },
     {
       title: "Role",
       dataIndex: "role",
+      key: "role",
       render: (role) => {
         if (role === "admin") return <Tag color="red">Admin</Tag>;
         if (role === "provider") return <Tag color="blue">Provider</Tag>;
         return <Tag color="green">Customer</Tag>;
       },
     },
-    {
-      title: "Hành động",
-      render: (_, record) => (
-        <Space>
-          <BoxEditUser record={record} refetch={refetch} />
-          <Popconfirm
-            title="Bạn chắc chắn muốn xóa?"
-            onConfirm={() => handleDelete(record._id)} // 👈 dùng id từ DB
-          >
-            <button 
-              disabled={record.role === "admin"} // Vô hiệu hóa nút xóa nếu là admin
-              className={`
-                ${record.role === "admin" ? "border border-[#c8c8c8] border-dashed text-gray-300 cursor-not-allowed bg-[#ffffff]" : "bg-red-500 text-white hover:scale-95 hover:opacity-65"}
-                 px-4 py-2 rounded-md transition duration-300 ease-in-out
-              `}
-            >
-              <DeleteOutlined />{" "}
-              Xóa
-            </button>
-          </Popconfirm>
-        </Space>
-      ),
-    },
   ];
 
   return (
-    <div >
-      <div className="flex justify-between items-center"> 
-          <h1 className="text-[18px] font-semibold">Thông tin người dùng</h1>
-          <BoxAddUser refetch={refetch}/>
-      </div>
+    <div>
+      <h1 className="text-[18px] font-semibold mb-3">
+        Thông tin người dùng
+      </h1>
+
       <Table
-        rowKey="_id" // 👈 QUAN TRỌNG nếu dùng Mongo thì đổi thành _id
+        rowKey="_id"
         columns={columns}
         dataSource={showUsers}
-        loading={loading}
+        loading={isLoading}
         pagination={{ pageSize: 5 }}
-        className="shadow-lg rounded-2xl border-[1px] border-dashed border-[#c8c8c8] overflow-hidden px-3 mt-3"
+        className="shadow-lg rounded-2xl border border-dashed border-[#c8c8c8] px-3"
       />
     </div>
   );

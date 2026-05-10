@@ -40,17 +40,20 @@ const AdminLayout = () => {
 
   const getTitle = () => {
     if (pathname === "/admin") return "Trang chủ";
+    if (pathname.startsWith("/admin/course-all")) return "Quản lý khóa học";
     if (pathname.startsWith("/admin/employee")) return "Quản lý tài khoản";
     if (pathname.startsWith("/admin/course")) return "Quản lý khóa học";
     if (pathname.startsWith("/admin/notification")) return "Quản lý thông báo";
-
+    if (pathname.startsWith("/admin/providers/pending")) return "Đăng ký Provider";
     return "";
   };
   
   const getSelectedKey = () => {
+    if (pathname.startsWith("/admin/course-all")) return "course-all";
     if (pathname.startsWith("/admin/course")) return "course";
     if (pathname.startsWith("/admin/employee")) return "employee";
     if (pathname.startsWith("/admin/notification")) return "notification";
+    if (pathname.startsWith("/admin/providers/pending")) return "providerpending";
     return "";
   };
 
@@ -66,15 +69,15 @@ const AdminLayout = () => {
             onClick: () => nav("employee"),
           },
           {
-            key: "notification",
+            key: "providerpending",
             icon: <BellOutlined style={{ fontSize: 20 }} />,
-            label: "Quản lý thông báo",
-            onClick: () => nav("notification"),
-          },
+            label: "Đăng ký Provider",
+            onClick: () => nav("providers/pending"),
+          }
         ]
       : []),
 
-    ...(role === "provider"
+    ...(role === "provider" 
       ? [
           {
             key: "course",

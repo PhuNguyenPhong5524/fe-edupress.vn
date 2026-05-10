@@ -25,6 +25,9 @@ import ManagementCourse from './pages/admin/ManagementCourse/ManagementCourse.js
 import BoxShowDetailCourse from './pages/admin/ManagementCourse/BoxShowDetailCourse/BoxShowDetailCourse.jsx'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import RegisterProvider from './pages/customer/RegisterProvider/registerProvider.jsx'
+import ManagementRegisterProvider from './pages/admin/ManagementRegisterProvider/ManagementRegisterProvider.jsx'
+
 
 const queryClient = new QueryClient();
 
@@ -53,6 +56,7 @@ createRoot(document.getElementById('root')).render(
                             </PrivateRoute>
                         } 
                       />
+                      <Route path='register-provider' element={<RegisterProvider  />} />
                       <Route path='checkout-history' element={<CheckoutHistoryPage />} />
                       <Route 
                         path='my-course' 
@@ -92,12 +96,27 @@ createRoot(document.getElementById('root')).render(
                           </PrivateRoute>
                         }
                       />
-
+                      <Route
+                        path="providers/pending"
+                        element={
+                          <PrivateRoute roles={["admin"]}>
+                            <ManagementRegisterProvider />
+                          </PrivateRoute>
+                        }
+                      />
                       {/* admin + provider */}
+                       {/* <Route
+                        path="course-all"
+                        element={
+                          <PrivateRoute roles={["admin"]}>
+                            <ManagementCouseAll />
+                          </PrivateRoute>
+                        }
+                      /> */}
                       <Route
                         path="course"
                         element={
-                          <PrivateRoute roles={["admin", "provider"]}>
+                          <PrivateRoute roles={["provider"]}>
                             <ManagementCourse />
                           </PrivateRoute>
                         }
