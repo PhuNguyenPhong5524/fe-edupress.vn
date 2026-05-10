@@ -29,14 +29,13 @@ const BoxShowCourseSection = ({
   onDeleteLecture,
 }) => {
   const sections = Array.isArray(showCoure) ? showCoure : [];
-
   const { mutate: deleteSection, isPending  } = useDeleteCourseSection();
 
 
   const items = sections.map((section) => ({
     key: section._id,
     label: (
-      <div className="flex justify-between items-start w-full px-4 py-2">
+      <div className="flex justify-between items-start w-full px-[55px] py-2">
         {/* LEFT */}
         <div className="flex flex-col gap-1 text-[12px] lg:text-[14px]">
           <span className="font-semibold text-white">
@@ -82,7 +81,13 @@ const BoxShowCourseSection = ({
                 )
               }
             >
-              <button className="text-red-500 hover:text-red-700 p-2">
+              <button 
+                className="
+                  text-red-500 hover:text-red-700 transition p-2 group
+                    duration-300 ease-in-out hover:bg-[#ffd5bf] rounded-[5px]
+                    hover:scale-105 hover:opacity-65 cursor-pointer 
+                "
+              >
                 <CloseIcon size={18} />
               </button>
             </Popconfirm>
@@ -96,9 +101,8 @@ const BoxShowCourseSection = ({
           section.lectures.map((lecture) => (
             <BoxLesson
               key={lecture._id}
-              title={lecture.title}
-              time={lecture.duration}
-              preview={lecture.preview}
+              lecture={lecture} 
+              refetch={refetch}
               onEdit={() => onEditLecture?.(lecture, section)}
               onDelete={() => onDeleteLecture?.(lecture._id, section)}
             />
@@ -110,7 +114,8 @@ const BoxShowCourseSection = ({
         )}
 
         <BoxAddCourseLecture 
-        
+          sectionId={section._id}
+          refetch={refetch}
         />
       </div>
     ),

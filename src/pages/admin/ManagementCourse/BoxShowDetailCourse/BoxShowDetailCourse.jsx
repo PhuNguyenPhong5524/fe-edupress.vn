@@ -50,7 +50,9 @@ export default function BoxShowDetailCourse() {
             label: "Tổng Quan",
             children: 
                 <BoxShowCourseOverview 
+                    courseId={courseId}
                     showCourse={showCourse?.overviews}
+                    refetch={refetch}
                 />
             ,
         },
@@ -59,7 +61,9 @@ export default function BoxShowDetailCourse() {
             label: "Yêu cầu",
             children: 
                 <BoxShowCourseRequest 
+                    courseId={courseId}
                     showCourse={showCourse?.requests}
+                    refetch={refetch}
                 /> 
             ,
         }

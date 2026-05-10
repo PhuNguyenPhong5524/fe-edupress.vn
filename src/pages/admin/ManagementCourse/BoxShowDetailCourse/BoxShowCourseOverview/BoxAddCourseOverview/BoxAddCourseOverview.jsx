@@ -1,26 +1,47 @@
 
 import { useState } from "react";
-import { Modal, Form, Input, Button, Alert } from "antd";
+import { Modal, Form, Input, Button, Alert, notification } from "antd";
 import axios from "axios";
 import { Select } from "antd";
+import usePostCourseOverview from "../../../../../../hooks/useCourse/usePostCourseOverview";
 
 const { Option } = Select;
   
-const BoxAddCourseOverview = ({ }) => {
+const BoxAddCourseOverview = ({ courseId, refetch }) => {
   const [open, setOpen] = useState(false);
   const showModal = () => {
     setOpen(true);
   };
 
+  
+  const { mutate: addOverview, isPending } = usePostCourseOverview();
 
-  const handleChange = (value) => {
-    setCategory(value);
-    console.log("Selected:", value);
+  const handleAdd = (values) => {
+    addOverview(
+      {
+        courseId,                         
+        overview_name: values.overview_name,
+      },
+      {
+        onSuccess: () => {
+          notification.success({
+            title: "Thành công",
+            description: "Thêm tổng quan khóa học thành công",
+          });
+          setOpen(false);
+          refetch?.();
+        },
+        onError: (err) => {
+          notification.error({
+            title: "Thất bại",
+            description: err?.response?.data?.message,
+          });
+        },
+      }
+    );
   };
-  const handleChangeProvider = (value) => {
-    setProvider(value);
-    console.log("Selected:", value);
-  };
+
+
 
   return (
     <>
@@ -41,54 +62,31 @@ const BoxAddCourseOverview = ({ }) => {
         <div>
             <h1 className="text-[20px] font-semibold text-[#000000">Thêm tổng quan khóa học</h1>
             <Form
-                layout="vertical"
-                // onFinish={handleAdd}
-                autoComplete="off"
-                // disabled={loading}
-                className=""
-            >   
-                <Form.Item
-                    className="custom-form-item w-full"
-                    label={<span className="text-[12px]">Mã</span>}
-                    name="_id"
-                    rules={[
-                        { required: true, message: "Vui lòng nhập nhà cung cấp!" },
-                    ]}
-                >
-                  <Input className="custom-input" disabled  defaultValue={`121212121212313343535`}/>
-                </Form.Item>
+              layout="vertical"
+              onFinish={handleAdd}
+              autoComplete="off"
+            >
+              {/* Course ID (ẩn hoặc disabled) */}
+              <Form.Item name="course_id" initialValue={courseId} hidden>
+                <Input />
+              </Form.Item>
 
-                <Form.Item
-                  className="custom-form-item w-full"
-                  label={<span className="text-[12px]">Yêu cầu khóa học</span>}
-                  name="request_name"
-                  rules={[
-                      { required: true, message: "Vui lòng nhập yêu cầu khóa học!" },
-                  ]}
-                >
-                      <Input className="custom-input" placeholder="Nhập yêu cầu khóa học" />
-                </Form.Item>
+              {/* Overview name */}
+              <Form.Item
+                label={<span className="text-[12px]">Tổng quan khóa học</span>}
+                name="overview_name"
+                rules={[
+                  { required: true, message: "Vui lòng nhập tổng quan khóa học!" },
+                ]}
+              >
+                <Input className="custom-input" placeholder="Nhập tổng quan khóa học" />
+              </Form.Item>
 
-
-{/* 
-                {message.content && (
-                    <Alert
-                        type={message.type}
-                        showIcon
-                        className="mb-3"
-                        description={<span className="text-[12px]">{message.content}</span>}
-                    />
-                )} */}
-
-                <Form.Item className="custom-form-item">
-                    <Button
-                        htmlType="submit"
-                        // loading={loading}
-                        className="custom-btn w-full"
-                    >
-                        Xác nhận thêm
-                    </Button>
-                </Form.Item>
+              <Form.Item>
+                <Button htmlType="submit" className="custom-btn w-full">
+                  Xác nhận thêm
+                </Button>
+              </Form.Item>
             </Form>
         </div>
       </Modal>
